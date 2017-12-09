@@ -1,0 +1,30 @@
+version: '2'
+volumes:
+  app-gems:
+    driver: local
+
+services:
+  postgres:
+    image: postgres
+
+  web: &app_base
+    build: .
+    command: bundle exec rails s -p 3000 -b '0.0.0.0' -P /tmp/server.pid
+    entrypoint: /app/bin/entrypoint-dev
+    env_file: .env
+    depends_on:
+      - postgres
+    ports:
+      - "3000:3000"
+    volumes:
+      - app-gems:/usr/local/bundle
+      - .:/app
+    tty: true
+
+  rspec:
+    <<: *app_base
+    command: rspec
+    ports:
+      - "3001:3001"
+    env_file:
+      - .env.test

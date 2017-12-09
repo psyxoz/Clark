@@ -1,0 +1,47 @@
+#! /bin/bash
+
+# The Docker App Container's development entrypoint.
+# This entry point will slowdown startup of container
+# because checks for database presence and gems status.
+
+set -e
+
+: ${APP_TEMP_PATH:="$RAILS_ROOT/tmp"}
+: ${APP_SETUP_LOCK:="$APP_TEMP_PATH/setup.lock"}
+: ${APP_SETUP_WAIT:="2"}
+
+# Define the functions lock and unlock our app containers setup processes:
+function lock_setup { mkdir -p $APP_TEMP_PATH && touch $APP_SETUP_LOCK; }
+function unlock_setup { rm -rf $APP_SETUP_LOCK; }
+function wait_setup { echo "Waiting for app setup to finish..."; sleep $APP_SETUP_WAIT; }
+
+# Unlock the setup process if the script exits abnormally
+trap unlock_setup HUP INT QUIT KILL TERM EXIT
+
+# this is to safely acquire lock, randomly sleep from 0 to 4 secs
+sleep $(echo "scale=3;  $[$RANDOM]/8000" | bc)
+
+# Wait until the setup lock file no longer exists:
+while [ -f $APP_SETUP_LOCK ]; do wait_setup; done
+
+# Lock installing, to prevent race condition, when multiply containers started
+# works only in case of file system sharing
+lock_setup
+
+# check or install the app gems
+bundle check || bundle
+
+# check for database and create initial database.
+# here should be simple ruby scripts to prevent loading all rails env.
+rake db:version || rake db:setup
+
+# run migrations
+rake db:migrate
+
+# unlock the setup process:
+unlock_setup
+
+# Here we are setting the default command if it is required
+# if [ -z "$1" ]; then set -- <default command> "$@"; fi
+
+exec "$@"
