@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-  include ActionController::HttpAuthentication::Basic,
+  include ActionController::HttpAuthentication::Basic::ControllerMethods,
           ActionView::Rendering,
           HandleErrors
 
@@ -12,8 +12,12 @@ class ApplicationController < ActionController::API
   end
 
   def current_user
-    @current_user ||= authenticate_with_http_basic do |email, password|
-      User.find_by!(email: email).authenticate(password)
+    @current_user ||= authenticate_user || raise(CanCan::AccessDenied)
+  end
+
+  def authenticate_user
+    authenticate_with_http_basic do |email, password|
+      User.find_by(email: email)&.authenticate(password)
     end
   end
 end

@@ -13,5 +13,9 @@ FactoryBot.define do
         create_list(:comment, evaluator.comments_count, article: article)
       end
     end
+
+    trait(:archived) do
+      status 1
+    end
   end
 end

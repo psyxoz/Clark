@@ -1,1 +1,1 @@
-json.call(article, :id, :owner, :title, :content, :created_at)
+json.call(article, :id, :status, :owner, :title, :content, :comments_count, :created_at)

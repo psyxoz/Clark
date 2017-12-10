@@ -2,14 +2,8 @@ module V1
   class ArticlesController < ApplicationController
     include Common
 
-    expose(:articles) { Article.includes(:user).page(page) }
-    expose :article, scope: -> do
-      if %w(create update).include?(action_name)
-        current_user.articles
-      else
-        Article
-      end
-    end
+    expose(:articles) { Article.active_with_users.page(page) }
+    expose(:article)
 
     def create
       article.save!
@@ -18,7 +12,7 @@ module V1
 
     def update
       article.update!(article_params)
-      render :show, status: :ok
+      head :accepted
     end
 
     def destroy
@@ -29,7 +23,9 @@ module V1
     private
 
     def article_params
-      params.require(:article).permit(:title, :content)
+      params.require(:article).permit(:title, :content).tap do |p|
+        p[:user_id] = current_user.id
+      end
     end
 
     def check_permissions

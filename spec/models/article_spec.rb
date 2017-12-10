@@ -37,17 +37,17 @@ describe Article, type: :model do
 
   describe 'comments relation' do
     let!(:article) { create(:article) }
-    let!(:comments) { create_list(:comment, 10, article_id: article.id) }
+    let!(:comments) { create_list(:comment, comments_count, article_id: article.id) }
+    let(:comments_count) { 10 }
 
     specify do
+      expect(article.reload.comments_count).to eq(comments_count)
       expect(article.comments).to match_array(comments)
     end
 
-    context 'delete' do
-      let(:count) { comments.count }
-
-      specify do
-        expect { article.destroy }.to change { Comment.count }.by(-count)
+    context 'delete article' do
+      it 'removes all related comments as well' do
+        expect { article.destroy }.to change { Comment.count }.by(-comments_count)
       end
     end
   end
