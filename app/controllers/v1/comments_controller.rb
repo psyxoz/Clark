@@ -1,6 +1,6 @@
 module V1
   class CommentsController < ::ApplicationController
-    include Common
+    include Common, V1::Swagger::Comments
 
     expose(:article) { Article.find(article_id) }
     expose(:comments) { article.comments.includes(:user).page(page) }

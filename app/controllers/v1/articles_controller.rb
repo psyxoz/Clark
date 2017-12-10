@@ -1,6 +1,6 @@
 module V1
   class ArticlesController < ApplicationController
-    include Common
+    include Common, V1::Swagger::Articles
 
     expose(:articles) { Article.active_with_users.page(page) }
     expose(:article, build: ->(article_params,_){ current_user.articles.new(article_params) })
@@ -23,7 +23,7 @@ module V1
     private
 
     def article_params
-      params.require(:article).permit(:title, :content)
+      params.require(:article).permit(:title, :content, :status)
     end
 
     def check_permissions
