@@ -6,6 +6,10 @@ module HandleErrors
       render_errors(messages: [e.message], status: :bad_request) # 400
     end
 
+    rescue_from CanCan::AccessDenied do |e|
+      render_errors(messages: [e.message], status: :forbidden) # 403
+    end
+
     rescue_from ActiveRecord::RecordNotFound do |e|
       render_errors(messages: [e.message], status: :not_found) # 404
     end
