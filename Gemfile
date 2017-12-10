@@ -17,6 +17,8 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'decent_exposure'
 gem 'cancancan', '~> 2.0'
+gem 'bcrypt', '~> 3.1.7'
+gem 'kaminari'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
