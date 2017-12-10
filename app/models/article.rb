@@ -1,10 +1,6 @@
 class Article < ApplicationRecord
-  belongs_to :user
+  include Ownerable
   has_many :comments
 
   validates :title, :content, presence: true
-
-  def owner
-    user.email
-  end
 end

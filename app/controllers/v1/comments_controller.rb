@@ -1,9 +1,9 @@
 module V1
-  class ArticlesController < ::ApplicationController
+  class CommentsController < ::ApplicationController
     include Common
 
     expose(:article) { Article.find(article_id) }
-    expose(:comments) { article.comments.page(page) }
+    expose(:comments) { article.comments.includes(:user).page(page) }
     expose(:comment, scope: -> { article.comments })
 
     def create
