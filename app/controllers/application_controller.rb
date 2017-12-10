@@ -1,13 +1,14 @@
 class ApplicationController < ActionController::API
-  include ActionView::Layouts
-  include HandleErrors
+  include ActionController::HttpAuthentication::Basic,
+          ActionView::Rendering,
+          HandleErrors
 
   before_action :set_default_response_format
 
   protected
 
   def set_default_response_format
-    #request.format = :json
+    request.format = :json
   end
 
   def current_user

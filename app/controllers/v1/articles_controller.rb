@@ -1,10 +1,15 @@
 module V1
-  class ArticlesController < ::ApplicationController
-    before_action :check_permissions, except: [:index, :show]
+  class ArticlesController < ApplicationController
+    include Common
 
-    expose(:page) { (params[:page].presence || 1).to_i }
-    expose(:articles) { Article.page(page) }
-    expose(:article)
+    expose(:articles) { Article.includes(:user).page(page) }
+    expose :article, scope: -> do
+      if %w(create update).include?(action_name)
+        current_user.articles
+      else
+        Article
+      end
+    end
 
     def create
       article.save!

@@ -10,7 +10,6 @@ class User < ApplicationRecord
 
   validates :role, inclusion: ROLES
   validates :email, uniqueness: true, presence: true
-  validates :password, length: { minimum: 6 }, if: -> { password_changed? }
 
   def admin?
     role == ADMIN_ROLE

@@ -5,7 +5,7 @@ FactoryBot.define do
     content { Forgery::LoremIpsum.paragraph }
 
     factory :article_with_comments do
-      ignore do
+      transient do
         comments_count 3
       end
 
