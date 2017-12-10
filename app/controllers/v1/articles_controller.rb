@@ -3,7 +3,7 @@ module V1
     include Common
 
     expose(:articles) { Article.active_with_users.page(page) }
-    expose(:article)
+    expose(:article, build: ->(article_params,_){ current_user.articles.new(article_params) })
 
     def create
       article.save!
@@ -23,9 +23,7 @@ module V1
     private
 
     def article_params
-      params.require(:article).permit(:title, :content).tap do |p|
-        p[:user_id] = current_user.id
-      end
+      params.require(:article).permit(:title, :content)
     end
 
     def check_permissions

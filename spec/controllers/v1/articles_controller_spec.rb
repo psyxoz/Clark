@@ -116,6 +116,8 @@ RSpec.describe V1::ArticlesController, type: :controller do
       it 'admin is able to update any item' do
         expect(response).to be_accepted
         expect(article.reload.title).to eq(title)
+        expect(article.user_id).to eq(user.id)
+        expect(article.user.admin?).to be_falsey
       end
     end
   end
