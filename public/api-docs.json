@@ -1,0 +1,16 @@
+{
+  "apiVersion": "1.0",
+  "swaggerVersion": "1.2",
+  "basePath": "",
+  "apis": [
+    {
+      "path": "/v1/comments.{format}",
+      "description": "Comments Management"
+    },
+    {
+      "path": "/v1/articles.{format}",
+      "description": "Articles Management"
+    }
+  ],
+  "authorizations": null
+}

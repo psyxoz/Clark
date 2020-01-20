@@ -17,7 +17,8 @@ $ docker-compose up --build web
 
 ### Run tests
 ```
-$ docker-compose run --rm rspec
+$ docker-compose run --rm spec rake db:create db:migrate
+$ docker-compose run --rm spec
 ```
 
 The app is currently mapped to `0.0.0.0:3000`
